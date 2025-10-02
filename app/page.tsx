@@ -3,12 +3,19 @@
 import { useState, useEffect, useRef } from 'react';
 import { Mail, Linkedin, Code, Briefcase, GraduationCap, HomeIcon, User } from 'lucide-react';
 
+// --- Type Definition for Navigation Items ---
+type NavItem = {
+  id: string;
+  name: string;
+  icon: React.ElementType;
+};
+
 // --- Main Page Component ---
 export default function Home() {
   const [activeSection, setActiveSection] = useState('home');
   const sections = useRef<{ [key: string]: HTMLDivElement | null }>({});
 
-  const navItems = [
+  const navItems: NavItem[] = [
     { id: 'home', name: 'Home', icon: HomeIcon },
     { id: 'profile', name: 'Profile', icon: User },
     { id: 'portfolio', name: 'Portfolio', icon: Briefcase },
@@ -38,15 +45,20 @@ export default function Home() {
     sections.current[id]?.scrollIntoView({ behavior: 'smooth' });
   };
 
+  // Helper function to assign refs
+  const setSectionRef = (key: string) => (el: HTMLDivElement | null) => {
+    sections.current[key] = el;
+  };
+
   return (
     <main className="bg-[#0D0D0D] text-[#C5C6C7] font-mono min-h-screen">
       <Header navItems={navItems} activeSection={activeSection} scrollToSection={scrollToSection} />
       
       <div className="container mx-auto px-4 pt-20 md:pt-24 max-w-4xl">
-        <div ref={el => sections.current['home'] = el} id="home"><LandingSection /></div>
-        <div ref={el => sections.current['profile'] = el} id="profile"><ProfileSection /></div>
-        <div ref={el => sections.current['portfolio'] = el} id="portfolio"><PortfolioSection /></div>
-        <div ref={el => sections.current['contact'] = el} id="contact"><ContactSection /></div>
+        <div ref={setSectionRef('home')} id="home"><LandingSection /></div>
+        <div ref={setSectionRef('profile')} id="profile"><ProfileSection /></div>
+        <div ref={setSectionRef('portfolio')} id="portfolio"><PortfolioSection /></div>
+        <div ref={setSectionRef('contact')} id="contact"><ContactSection /></div>
       </div>
       
       <Footer />
@@ -55,7 +67,7 @@ export default function Home() {
 }
 
 // --- Header Component ---
-const Header = ({ navItems, activeSection, scrollToSection }: { navItems: any[], activeSection: string, scrollToSection: (id: string) => void }) => (
+const Header = ({ navItems, activeSection, scrollToSection }: { navItems: NavItem[], activeSection: string, scrollToSection: (id: string) => void }) => (
   <header className="fixed top-0 left-0 right-0 z-50 bg-[#0D0D0D]/80 backdrop-blur-sm border-b border-[#39FF14]/20">
     <div className="container mx-auto px-4 py-3 flex justify-between items-center max-w-4xl">
       <div className="flex items-center space-x-2">
@@ -223,7 +235,7 @@ const PortfolioSection = () => (
 const ContactSection = () => (
   <Section title="Contact" icon={Mail}>
     <div className="text-center">
-        <p className="text-lg text-white mb-4">Let's connect and build something great.</p>
+        <p className="text-lg text-white mb-4">Let&apos;s connect and build something great.</p>
         <p className="text-md text-[#C5C6C7] mb-8">
           Feel free to reach out for collaborations or a chat.
         </p>
