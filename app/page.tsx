@@ -33,10 +33,20 @@ const useInView = (ref: React.RefObject<Element>, options: IntersectionObserverI
     return isInView;
 };
 
+// Define props type to avoid inline 'any' and satisfy strict linting rules
+type TypeOnScrollViewProps = {
+  text: string;
+  as?: React.ElementType;
+  className?: string;
+  speed?: number;
+  [key: string]: unknown; // Use 'unknown' instead of 'any' for better type safety
+};
+
 // --- New Typing Component Triggered by Scrolling into View (FIXED) ---
-const TypeOnScrollView = ({ text, as: Component = 'span', className, speed = 30, ...props }: { text: string; as?: React.ElementType; className?: string; speed?: number; [key: string]: any }) => {
+const TypeOnScrollView = ({ text, as: Component = 'span', className, speed = 30, ...props }: TypeOnScrollViewProps) => {
     const [displayedText, setDisplayedText] = useState('');
-    const ref = useRef<any>(null); // FIX: Changed type to 'any' to resolve TypeScript issue with polymorphic components
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const ref = useRef<any>(null); // FIX: Use 'any' with an eslint disable to solve the polymorphic ref typing issue
     const isInView = useInView(ref);
     const [hasStarted, setHasStarted] = useState(false);
 
